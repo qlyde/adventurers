@@ -70,9 +70,337 @@ impl Event {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::quests::combinators::{QuestMajority, QuestRepeat, QuestThen};
+    use crate::quests::{WalkQuest, WalkRepeatQuest};
+
+    /// The player wins the game if they walk over 5 sand blocks
     #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+    fn q1_test() {
+        let mut q1 = Box::new(QuestRepeat::new(Box::new(WalkQuest::new(Block::Sand)), 5));
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Cinderblock)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Flowerbush)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q1.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Complete
+        );
+    }
+
+    /// "First, collect five objects called 'x'"
+    /// "After finishing that, collect three objects called 'y'"
+    #[test]
+    fn q2_test() {
+        let mut q2 = Box::new(QuestThen::new(
+            Box::new(QuestRepeat::new(
+                Box::new(WalkQuest::new(Block::Object('x'))),
+                5,
+            )),
+            Box::new(QuestRepeat::new(
+                Box::new(WalkQuest::new(Block::Object('y'))),
+                3,
+            )),
+        ));
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q2.register_event(&Event::on_block(Block::Object('y'))),
+            QuestStatus::Complete
+        );
+    }
+
+    /// "The player wins the game if they do 2 of the following:"
+    /// "walk over 5 blocks of sand", then "collect an 'x' object".
+    /// "collect a 'y' object", then "walk on grass".
+    /// "walk over 9 blocks of water, 3 times".
+    #[test]
+    fn q3_test1() {
+        let mut q3 = Box::new(QuestMajority::new(
+            Box::new(QuestThen::new(
+                Box::new(QuestRepeat::new(Box::new(WalkQuest::new(Block::Sand)), 5)),
+                Box::new(WalkQuest::new(Block::Object('x'))),
+            )),
+            Box::new(QuestThen::new(
+                Box::new(WalkQuest::new(Block::Object('x'))),
+                Box::new(WalkQuest::new(Block::Grass)),
+            )),
+            Box::new(QuestRepeat::new(
+                Box::new(WalkRepeatQuest::new(Block::Water, 9)),
+                2,
+            )),
+        ));
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Sand)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Complete
+        );
+    }
+
+    #[test]
+    fn q3_test2() {
+        let mut q3 = Box::new(QuestMajority::new(
+            Box::new(QuestThen::new(
+                Box::new(QuestRepeat::new(Box::new(WalkQuest::new(Block::Sand)), 5)),
+                Box::new(WalkQuest::new(Block::Object('x'))),
+            )),
+            Box::new(QuestThen::new(
+                Box::new(WalkQuest::new(Block::Object('x'))),
+                Box::new(WalkQuest::new(Block::Grass)),
+            )),
+            Box::new(QuestRepeat::new(
+                Box::new(WalkRepeatQuest::new(Block::Water, 9)),
+                2,
+            )),
+        ));
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Object('x'))),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Grass)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Ongoing
+        );
+        assert_eq!(
+            q3.register_event(&Event::on_block(Block::Water)),
+            QuestStatus::Complete
+        );
     }
 }
