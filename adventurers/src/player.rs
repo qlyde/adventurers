@@ -23,7 +23,7 @@ impl Player {
     pub fn do_move(
         &mut self,
         game: &mut Game,
-        map: &Map,
+        map: &mut Map,
         quest: &mut Box<dyn Quest<Event>>,
         card_dir: CardinalDirection,
     ) {
@@ -99,20 +99,23 @@ impl Player {
     /// Reset a block on the game screen after it has been walked on
     ///
     /// After Object blocks are walked on however, they disappear
-    fn reset_block(&self, game: &mut Game, map: &Map, position: Coordinate) {
+    fn reset_block(&self, game: &mut Game, map: &mut Map, position: Coordinate) {
         let block = map.get(&position.into());
-        game.set_screen_char(
-            position.x,
-            position.y,
-            block.map(|b| {
-                if let Block::Object(_) = b {
-                    let sc: StyledCharacter = b.clone().into();
+
+        if let Some(Block::Object(_)) = block {
+            let block = map.remove(&position.into());
+            game.set_screen_char(
+                position.x,
+                position.y,
+                block.map(|b| {
+                    let sc: StyledCharacter = b.into();
                     sc.character(' ')
-                } else {
-                    b.clone().into()
-                }
-            }),
-        );
+                }),
+            );
+            return;
+        }
+
+        game.set_screen_char(position.x, position.y, block.map(|b| b.clone().into()));
     }
 
     /// Move the viewport if the player is close to the edge of the screen

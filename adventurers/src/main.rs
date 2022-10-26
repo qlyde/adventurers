@@ -118,28 +118,36 @@ impl Controller for MyGame {
 
         match event.into() {
             // move up
-            SimpleEvent::Just(KeyCode::Up) => {
-                self.player
-                    .do_move(game, &self.map, &mut self.quest, CardinalDirection::North)
-            }
+            SimpleEvent::Just(KeyCode::Up) => self.player.do_move(
+                game,
+                &mut self.map,
+                &mut self.quest,
+                CardinalDirection::North,
+            ),
 
             // move right
-            SimpleEvent::Just(KeyCode::Right) => {
-                self.player
-                    .do_move(game, &self.map, &mut self.quest, CardinalDirection::East)
-            }
+            SimpleEvent::Just(KeyCode::Right) => self.player.do_move(
+                game,
+                &mut self.map,
+                &mut self.quest,
+                CardinalDirection::East,
+            ),
 
             // move down
-            SimpleEvent::Just(KeyCode::Down) => {
-                self.player
-                    .do_move(game, &self.map, &mut self.quest, CardinalDirection::South)
-            }
+            SimpleEvent::Just(KeyCode::Down) => self.player.do_move(
+                game,
+                &mut self.map,
+                &mut self.quest,
+                CardinalDirection::South,
+            ),
 
             // move left
-            SimpleEvent::Just(KeyCode::Left) => {
-                self.player
-                    .do_move(game, &self.map, &mut self.quest, CardinalDirection::West)
-            }
+            SimpleEvent::Just(KeyCode::Left) => self.player.do_move(
+                game,
+                &mut self.map,
+                &mut self.quest,
+                CardinalDirection::West,
+            ),
 
             // check quest status
             SimpleEvent::Just(KeyCode::Char('q')) => game.set_message(Some(
