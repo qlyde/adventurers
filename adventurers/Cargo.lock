@@ -16,6 +16,9 @@ dependencies = [
 [[package]]
 name = "adventurers_quest"
 version = "0.1.0"
+dependencies = [
+ "blocks",
+]
 
 [[package]]
 name = "autocfg"

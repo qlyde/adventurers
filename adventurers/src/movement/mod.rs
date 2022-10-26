@@ -1,3 +1,7 @@
+//! # Movement module
+//!
+//! Represent position and directional movement
+
 pub mod coordinate;
 pub mod direction;
 

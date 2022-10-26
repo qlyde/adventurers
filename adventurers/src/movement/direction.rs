@@ -1,11 +1,13 @@
 use std::ops::{Add, AddAssign};
 
+/// Represent a direction vector in the 2D plane
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Direction {
     pub x: i32,
     pub y: i32,
 }
 
+/// Represent a cardinal direction
 pub enum CardinalDirection {
     North,
     East,

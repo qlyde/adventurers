@@ -3,7 +3,7 @@ use std::ops::{Add, AddAssign};
 use super::{CardinalDirection, Direction};
 
 /// Represent a 2D coordinate.
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Default, Copy, Clone, PartialEq, Eq)]
 pub struct Coordinate {
     pub x: i32,
     pub y: i32,
@@ -13,12 +13,6 @@ impl Coordinate {
     /// Create a new coordinate.
     pub fn new(x: i32, y: i32) -> Coordinate {
         Coordinate { x, y }
-    }
-}
-
-impl Default for Coordinate {
-    fn default() -> Self {
-        Coordinate { x: 0, y: 0 }
     }
 }
 
@@ -71,8 +65,8 @@ impl AddAssign<CardinalDirection> for Coordinate {
     }
 }
 
-impl Into<(i32, i32)> for Coordinate {
-    fn into(self) -> (i32, i32) {
-        (self.x, self.y)
+impl From<Coordinate> for (i32, i32) {
+    fn from(coordinate: Coordinate) -> Self {
+        (coordinate.x, coordinate.y)
     }
 }

@@ -1,3 +1,4 @@
+use adventurers_quest::{Event, Quest, QuestStatus};
 use blocks::Block;
 use termgame::{Game, Message, StyledCharacter, ViewportLocation};
 
@@ -5,14 +6,27 @@ use crate::config::{PLAYER_HEALTH, VP_BUFFER, VP_SIZE};
 use crate::movement::{CardinalDirection, Coordinate};
 use crate::Map;
 
+/// The player in the game
 pub struct Player {
+    /// The icon to render the player as
     icon: char,
+    /// The current position of the player on the map
     position: Coordinate,
+    /// The current health of the player
     health: i32,
+    /// Whether the player has won the game or not
+    pub won: bool,
 }
 
 impl Player {
-    pub fn r#move(&mut self, game: &mut Game, map: &Map, card_dir: CardinalDirection) {
+    /// Move the player and update the game screen and quest
+    pub fn do_move(
+        &mut self,
+        game: &mut Game,
+        map: &Map,
+        quest: &mut Box<dyn Quest<Event>>,
+        card_dir: CardinalDirection,
+    ) {
         if self.health == 0 {
             game.end_game();
         }
@@ -46,6 +60,19 @@ impl Player {
             if self.health == 0 {
                 game.set_message(Some(Message::new(String::from("You drowned :("))));
             }
+
+            // register event
+            if quest.register_event(&Event::on_block(destination_block.clone()))
+                == QuestStatus::Complete
+            {
+                self.won = true;
+                game.set_message(Some(
+                    Message::new(String::from(
+                        "You completed all quests! Press any key to quit",
+                    ))
+                    .title(String::from("You won!")),
+                ));
+            }
         }
 
         self.position = new_pos;
@@ -53,6 +80,7 @@ impl Player {
         self.render(game);
     }
 
+    /// Render the player on the game screen
     pub fn render(&self, game: &mut Game) {
         let sc = game.get_screen_char(self.position.x, self.position.y);
         game.set_screen_char(
@@ -65,6 +93,9 @@ impl Player {
         self.move_viewport(game);
     }
 
+    /// Reset a block on the game screen after it has been walked on
+    ///
+    /// After Object blocks are walked on however, they disappear
     fn reset_block(&self, game: &mut Game, map: &Map, position: Coordinate) {
         let block = map.get(&position.into());
         game.set_screen_char(
@@ -81,6 +112,7 @@ impl Player {
         );
     }
 
+    /// Move the viewport if the player is close to the edge of the screen
     fn move_viewport(&self, game: &mut Game) {
         let vp = game.get_viewport();
         let mut vp_x = vp.x;
@@ -108,6 +140,7 @@ impl Default for Player {
             icon: '♟',
             position: Coordinate::new(2, 2),
             health: PLAYER_HEALTH,
+            won: false,
         }
     }
 }
