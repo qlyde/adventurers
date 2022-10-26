@@ -1,6 +1,6 @@
+use blocks::Block;
 use termgame::{Game, Message, StyledCharacter, ViewportLocation};
 
-use crate::block::Block;
 use crate::config::{PLAYER_HEALTH, VP_BUFFER, VP_SIZE};
 use crate::movement::{CardinalDirection, Coordinate};
 use crate::Map;

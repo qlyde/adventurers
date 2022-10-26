@@ -1,4 +1,3 @@
-mod block;
 mod config;
 mod movement;
 mod player;
@@ -8,7 +7,7 @@ use std::error::Error;
 use std::time::Duration;
 use std::{env, fs};
 
-use block::Block;
+use blocks::Block;
 use movement::CardinalDirection;
 use player::Player;
 use termgame::{run_game, Controller, Game, GameEvent, GameSettings, KeyCode, SimpleEvent};
