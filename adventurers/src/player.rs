@@ -45,7 +45,7 @@ impl Player {
             if let Some(message) = destination_block.message() {
                 game.set_message(Some(Message::new(message)));
             } else {
-                game.set_message(None)
+                game.set_message(None);
             }
 
             // check if destination block hurts the player
@@ -73,6 +73,9 @@ impl Player {
                     .title(String::from("You won!")),
                 ));
             }
+        } else {
+            game.set_message(None);
+            self.health = PLAYER_HEALTH;
         }
 
         self.position = new_pos;
