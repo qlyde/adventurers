@@ -3,53 +3,68 @@
 (You should put an [X] in boxes with completed features.
 Lines starting with ">" are additional comments.)
 
-[ ] There is a player is displayed on the screen.
+[x] There is a player is displayed on the screen.
 
-[ ] The player can be moved by pressing keys
+[x] The player can be moved by pressing keys
 > You can use the Up/Down/Left/Right keys to move around. (CHANGE THIS LINE IF IT IS NOT CORRECT)
 
-[ ] When the player tries to move off the screen, the screen follows them.
+[x] When the player tries to move off the screen, the screen follows them.
 
-[ ] The viewport does not necessarily always move when the player does.
+[x] The viewport does not necessarily always move when the player does.
 
-[ ] There are at least 5 block types (i.e different coloured blocks).
+[x] There are at least 5 block types (i.e different coloured blocks).
 
-[ ] The layout of the map is specified by a file on the filesystem.
+[x] The layout of the map is specified by a file on the filesystem.
 
-[ ] There is a 'barrier' block. When the player attempts to pass through it, they cannot.
+[x] There is a 'barrier' block. When the player attempts to pass through it, they cannot.
 
-[ ] There is a 'water' block. When the player walks through the 10th block in a row, they die and the game ends.
+[x] There is a 'water' block. When the player walks through the 10th block in a row, they die and the game ends.
 
-[ ] There is a 'sign' block. When the player walks over the sign block, a specified message is shown.
+[x] There is a 'sign' block. When the player walks over the sign block, a specified message is shown.
 
-[ ] There are 'objects' in my game -- when a player walks over the object, it disappears.
+[x] There are 'objects' in my game -- when a player walks over the object, it disappears.
 
-[ ] There is a quests system in my game.
-[ ] The quests system is in a seperate module or crate to the game.
+[x] There is a quests system in my game.
+[x] The quests system is in a seperate module or crate to the game.
 
-[ ] The first quest (walking over sand blocks) is implemented.
-[ ] The 'q' key shows the progress of my user in this quest.
+[x] The first quest (walking over sand blocks) is implemented.
+[x] The 'q' key shows the progress of my user in this quest.
 
-[ ] The second quest (collecting five objects of one type, then three of another)
-[ ] The 'q' key shows the progress of my user in this quest.
+[x] The second quest (collecting five objects of one type, then three of another)
+[x] The 'q' key shows the progress of my user in this quest.
 
-[ ] The third quest (at least two of the three subquests) is implemented.
-[ ] The 'q' key shows the progress of my user in this quest.
+[x] The third quest (at least two of the three subquests) is implemented.
+[x] The 'q' key shows the progress of my user in this quest.
 
-[ ] My quests system is designed to make it easy for a developer to add more quests.
+[x] My quests system is designed to make it easy for a developer to add more quests.
 
 ## How to Run My Program
 
 Assuming we have taken your crate, without any compilation; what commands will start the game?
 
-> $ cargo run path/to/map.ron first_quest
+For quest 1:
+> $ cargo run path/to/map.ron q1
+
+For quest 2:
+> $ cargo run path/to/map.ron q2
+
+For quest 3:
+> $ cargo run path/to/map.ron q3
 
 ## Design Excellence
 
 During the assignment we make suggestions for "design excellence". Please list all those
 things you did, and where we can find them in your program.
 
-> - TODO
+> Implement Player Navigation - This was done in the movement module (in src/movement/*)
+  and movement was implemented via structs that represent coordinates and direction
+> Implement Block Types - This was done using enums in a separate lib crate (/blocks/).
+  The block enum can be converted into a StyledCharacter easily
+> Parsing from a File - This was done using serde/ron crates
+> Water - The player "health" state is generic and can be affected by further block types (not just water)
+> Quest System - I created primitive tasks and quest combinators. Quest combinators work on both
+  primitive tasks AND other combinators so extensive quests can be created. Future developers
+  can easily extend this system.
 
 If you made any other design choices you think demonstrate an equivalent level
 of design excellence, please list them below (including where to find them).
